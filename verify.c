@@ -25,7 +25,7 @@ int verify_args(char *argv[],int argc)
 	
 	inc = 1;
 	
-	if (argc == 6 || argc == 7)
+	if (argc == 5 || argc == 6)
 	{
 		while(inc < argc)
 		{
@@ -38,7 +38,10 @@ int verify_args(char *argv[],int argc)
 		}
 	}
 	else
+	{
 		printf("wrong number of argument expected 5 or 6 got %d\n",argc - 1);
+		return(false);
+	}
 	inc = 1;	
 	while (inc < argc - 2)
 	{
