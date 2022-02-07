@@ -16,7 +16,7 @@ ${NAME}:${OBJS}
 	
 
 run: all
-	./philo 2  300 400 3 
+	./philo 4 410 200 200 2
 
 val: all
 	valgrind ./philo 2 2 300 400 0

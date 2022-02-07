@@ -40,22 +40,22 @@ int verify_args(char *argv[],int argc)
 	else
 	{
 		printf("wrong number of argument expected 5 or 6 got %d\n",argc - 1);
-		return(false);
+		return(FALSE);
 	}
 	inc = 1;	
 	while (inc < argc - 2)
 	{
 		if(ft_atoi(argv[inc]) <= 0)
-			return(false);
+			return(FALSE);
 		inc++;
 	}
 	if((ft_atoi(argv[inc]) < 0 && argc == 6) || (ft_atoi(argv[inc]) == 0 && argc == 5))	
 		{
 			printf("wrong content in last field\n");
-		return(false);
+		return(FALSE);
 		}
-	return (true);
+	return (TRUE);
 	
 	printf("Error: wrong number of field(s)\n");
-	return (false);
+	return (FALSE);
 }
