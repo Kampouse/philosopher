@@ -1,7 +1,7 @@
 NAME = philo
 
 FLAGS = -Wall -Wextra -Werror -g
-SRCS =  main.c  verify.c  
+SRCS =  main.c  verify.c  philo.c philo_utils.c
 RM =  rm -rf 
 .c.o:
 	@gcc ${FLAGS}  -c $< -o ${<:.c=.o}
@@ -16,7 +16,7 @@ ${NAME}:${OBJS}
 	
 
 run: all
-	./philo 4 410 200 200 2
+	./philo 5 800 200 200 2
 
 val: all
 	valgrind ./philo 2 2 300 400 0

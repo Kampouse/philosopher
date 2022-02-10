@@ -32,7 +32,7 @@ int verify_args(char *argv[],int argc)
 			if(is_not_number(argv[inc]))
 			{
 				printf("invalid input at: -> %s\n",argv[inc]);
-				return(1);
+				return(FALSE);
 			}
 			inc++;
 		}
