@@ -31,7 +31,6 @@ inc = 0;
 
 t_philo **philo_init(t_state *state, char *argv[])
 {
-
 	(void)state;
 	t_philo	**philos;
 	int inc;
@@ -51,6 +50,8 @@ t_philo **philo_init(t_state *state, char *argv[])
 	    philos[inc]->time_to_eat = ft_atoi(argv[3]);
 	    philos[inc]->time_to_sleep = ft_atoi(argv[4]);
 	    philos[inc]->must_eat = ft_atoi(argv[5]);
+	    philos[inc]->l_fork = state->forks[philos[inc]->lfork];
+	    philos[inc]->r_fork = state->forks[philos[inc]->rfork];
 	    philos[inc]->states = state;
 			inc++;
 	}
@@ -96,7 +97,6 @@ int main(int argc, char *argv[])
 	long  sleep_times;
 	pthread_t thread;	
 	int inc;
-	
 	inc  = 0;
 	//make an array of thread
 	sleep_times = current_time();
@@ -105,16 +105,24 @@ int main(int argc, char *argv[])
 	else
 		return (0);
 	state = state_init(argv);
+
 	while(state->philo[inc])
 	{
 		pthread_create(&thread,NULL,philo_loop,state->philo[inc]);
-		usleep(15000);
 		inc++;
 	}
+	inc = 0;
+
+	sleep(10);
 	while(1)
 	{
-
-		inc++;
+		if(inc == state->philo_count)
+			inc = 0;
+		if(current_time() >  (unsigned int) state->philo[inc]->time_to_take_eat)
+		{
+				printf("%d died \n",inc);
+				return(0);
+		}
+		inc++;	
 	}
-	state_delete(state);
 }
