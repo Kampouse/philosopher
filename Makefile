@@ -1,7 +1,7 @@
 NAME = philo
 
 FLAGS = -Wall -Wextra -Werror -g
-SRCS =  main.c  verify.c  philo.c philo_utils.c
+SRCS =  main.c  verify.c  philo.c philo_utils.c init.c
 RM =  rm -rf 
 .c.o:
 	@gcc ${FLAGS}  -c $< -o ${<:.c=.o}
@@ -16,10 +16,10 @@ ${NAME}:${OBJS}
 	
 
 run: all
-	./philo 2 60 60 60 2
+	./philo 4 410 200 200 
 
 val: all
-	valgrind ./philo 2 2 300 400 0
+	 valgrind ./philo 4 310 200 100 2 40
 
 test: all
 	 @echo "error asserting"
@@ -27,11 +27,9 @@ test: all
 	./philo 5 2
 	./philo 5 2 3
 	./philo 5 2 4 5
-	@echo "!--------------!"
 	./philo 5 2 4 6 7
 	./philo 5 2 4 6 7 8
 	./philo 5 2 4 6 7 0
-	@echo "!--------------!"
  
 
 

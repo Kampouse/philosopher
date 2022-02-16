@@ -1,44 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/15 20:29:22 by jemartel          #+#    #+#             */
+/*   Updated: 2022/02/15 21:54:13 by jemartel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "philo.h"
 
-
-
-
-void * philo_loop(void *philo)
+int	phil_looping(t_philo *phil, t_state *state, int start)
 {
-	t_philo *phil;
-	t_state *state;
-	int start = current_time();
-phil = philo;
-state = phil->states;
-	phil->time_to_take_eat = start + phil->death_time;
-	if(phil->nbr % 2 == 0)
-	{
-		printf("%d\n",phil->nbr);
-					usleep(16000);
-	}
 	while (1)
 	{
-		printf("is thinking %d\n",phil->nbr);
-		sleep_time(phil->time_to_eat);
-		printf("took l_fork %d\n",phil->nbr);
+		print_protected(state,
+			"is thinking", phil->nbr, current_time() - start);
 		pthread_mutex_lock(&state->forks[phil->lfork]);
-		printf("took r_fork %d\n",phil->nbr);
+		print_protected(state,
+			"has  taken a fork", phil->nbr, current_time() - start);
 		pthread_mutex_lock(&state->forks[phil->rfork]);
-		sleep_time(phil->time_to_sleep);
-		printf("drop l_fork %d\n",phil->nbr);
+		print_protected(state,
+			"has  taken a fork", phil->nbr, current_time() - start);
+		sleep_time(phil->time_to_eat);
 		pthread_mutex_unlock(&state->forks[phil->lfork]);
+		print_protected(state,
+			"drop a fork", phil->nbr, current_time() - start);
 		pthread_mutex_unlock(&state->forks[phil->rfork]);
-		printf("drop l_fork %d\n",phil->nbr);
-		state->philo[phil->nbr]->time_to_take_eat = current_time() + phil->death_time;
-		//printf("%u--\n",(unsigned int)state->philo[phil->nbr]->time_to_die);
-		
-		start = current_time();
-		phil->ate++;
-		//printf("philo:%d %d took lfrok: %d and rfork: %d\n",phil->nbr,  current_time() - start,phil->lfork,phil->rfork);
-		//sleep_time(phil->time_to_eat);
+		print_protected(state,
+			"drop a fork", phil->nbr, current_time() - start);
+		state->philo[phil->nbr
+		]->time_to_take_eat = current_time() + phil->death_time;
+		state->philo[phil->nbr]->ate++;
+		sleep_time(phil->time_to_sleep);
+		print_protected(state,
+			"is sleeping", phil->nbr, current_time() - start);
 	}
- //eat
-//sleep
-//think
-return(0);
+}
+
+void	*philo_loop(void *philo)
+{
+	t_philo		*phil;
+	t_state		*state;
+	int			start;
+
+	phil = philo;
+	state = phil->states;
+	start = current_time();
+	phil->start = start;
+	phil->time_to_take_eat = start + phil->death_time;
+	if (phil->nbr % 2 == 0)
+	{
+		printf("tst\n");
+		usleep(16000);
+	}
+	phil_looping(phil, state, start);
+	return (0);
 }

@@ -1,27 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/15 18:58:24 by jemartel          #+#    #+#             */
+/*   Updated: 2022/02/15 21:52:27 by jemartel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-
-
-int display_args(int argc,char *argv[])
+void	philo_delete(t_philo **philo)
 {
-	(void)argc;
-  printf("there will be : %d philos and forks\n",ft_atoi(argv[1]));
-  printf("time before dying must eat: %d\n",ft_atoi(argv[2]));
-  printf("they take  to eat : %d\n",ft_atoi(argv[3]));
-  printf("they take  to sleep : %d\n",ft_atoi(argv[4]));
-  if(argc == 6)
-	  printf("optional must eat: %d\n",ft_atoi(argv[5]));
-
-return(0);
-}
-
-
-void philo_delete(t_philo **philo)
-{
-int inc;
+	int	inc;
 
 inc = 0;
-	while(philo[inc])
+	while (philo[inc])
 	{
 		free(philo[inc]);
 		inc++;
@@ -29,55 +25,27 @@ inc = 0;
 	free(philo);
 }
 
-t_philo **philo_init(t_state *state, char *argv[])
+int	must_eat( t_state *states)
 {
-	(void)state;
-	t_philo	**philos;
-	int inc;
-	const int nbr_philo	 = ft_atoi(argv[1]);
+	int				inc;
+	const int		must_eat = states->philo[0]->must_eat;
 
 	inc = 0;
-	philos = NULL;
-	 philos = ft_calloc(sizeof(t_philo **),nbr_philo + 1);
-	while (inc != nbr_philo)
+	if (must_eat != -1)
 	{
-		philos[inc] = ft_calloc(sizeof(t_philo),1);
-		philos[inc]->lfork = inc;
-		philos[inc]->rfork = (inc + 1) % nbr_philo;
-	    philos[inc]->nbr  = inc;
-	    philos[inc]->ate  = 0;
-	    philos[inc]->death_time = ft_atoi(argv[2]);
-	    philos[inc]->time_to_eat = ft_atoi(argv[3]);
-	    philos[inc]->time_to_sleep = ft_atoi(argv[4]);
-	    philos[inc]->must_eat = ft_atoi(argv[5]);
-	    philos[inc]->l_fork = state->forks[philos[inc]->lfork];
-	    philos[inc]->r_fork = state->forks[philos[inc]->rfork];
-	    philos[inc]->states = state;
+		while (states->philo[inc])
+		{
+			if (states->philo[inc]->ate != must_eat)
+				break ;
 			inc++;
+		}
+		if (inc == states->philo_count)
+			return (0);
 	}
-return (philos);
+	return (1);
 }
 
-t_state *state_init(char *argv[])
-{
-	int		inc;
-
-	const int nbr_philo  = ft_atoi(argv[1]);
-	t_state *state;
-
-	inc = 0;
-	state = ft_calloc(sizeof(t_state), 1);	
-	state->forks = ft_calloc(sizeof(pthread_mutex_t), nbr_philo);
-	state->philo_count = nbr_philo;
-	while (inc < nbr_philo)
-	{
-		pthread_mutex_init(&state->forks[inc], NULL);
-		inc++;
-	}
-	state->philo = philo_init(state, argv);
-	return (state);
-}
- void state_delete(t_state *state)
+void	state_delete(t_state *state)
 {
 	int		inc;
 
@@ -91,38 +59,52 @@ t_state *state_init(char *argv[])
 	free(state->forks);
 	free(state);
 }
-int main(int argc, char *argv[])
+
+int	main_loop(t_state *state, int inc)
 {
-	t_state *state;
-	long  sleep_times;
-	pthread_t thread;	
-	int inc;
-	inc  = 0;
-	//make an array of thread
+	while (1)
+	{
+		usleep(10);
+		if (inc == state->philo_count)
+			inc = 0;
+		if (must_eat(state) == 0)
+		{
+			inc = 0;
+			while (state->philo[inc])
+			{
+				print_protected(state, "end 💀", inc, 0);
+				inc++;
+			}
+			return (0);
+		}
+		if (current_time() > (unsigned int) state->philo[inc]->time_to_take_eat)
+		{
+			print_protected(state, "died 💀", inc,
+				state->philo[inc]->time_to_take_eat - state->philo[inc]->start);
+			return (0);
+		}
+		inc++;
+	}
+}
+
+int	main(int argc, char *argv[])
+{
+	t_state		*state;
+	long		sleep_times;
+	pthread_t	thread;	
+	int			inc;
+
+	inc = 0;
 	sleep_times = current_time();
 	if (verify_args(argv, argc) == TRUE)
 		display_args(argc, argv);
 	else
 		return (0);
-	state = state_init(argv);
-
-	while(state->philo[inc])
+	state = state_init(argv, argc);
+	while (state->philo[inc])
 	{
-		pthread_create(&thread,NULL,philo_loop,state->philo[inc]);
+		pthread_create(&thread, NULL, philo_loop, state->philo[inc]);
 		inc++;
 	}
-	inc = 0;
-
-	sleep(10);
-	while(1)
-	{
-		if(inc == state->philo_count)
-			inc = 0;
-		if(current_time() >  (unsigned int) state->philo[inc]->time_to_take_eat)
-		{
-				printf("%d died \n",inc);
-				return(0);
-		}
-		inc++;	
-	}
+	main_loop(state, 0);
 }
