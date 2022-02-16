@@ -6,7 +6,7 @@
 /*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 21:00:29 by jemartel          #+#    #+#             */
-/*   Updated: 2022/02/15 21:07:04 by jemartel         ###   ########.fr       */
+/*   Updated: 2022/02/16 16:03:26 by jemartel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -62,8 +62,9 @@ int	verify_args(char *argv[], int argc)
 	inc = 1;
 	while (inc < argc - 2)
 	{
-		if (ft_atoi(argv[inc]) <= 0)
-			return (print_error("argument cannot be zero or under\n"));
+		if (ft_atoi(argv[inc]) <= 0 || ft_atoi(argv[inc]) > 200)
+			return (print_error(
+					"argument cannot be eithe zero or under or  over 200\n"));
 		inc++;
 	}
 	if ((ft_atoi(argv[inc]) < 0 && argc == 6) || (

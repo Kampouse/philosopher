@@ -1,7 +1,7 @@
 NAME = philo
 
 FLAGS = -Wall -Wextra -Werror -g
-SRCS =  main.c  verify.c  philo.c philo_utils.c init.c
+SRCS =  main.c  verify.c  philo.c philo_utils.c init.c utils.c
 RM =  rm -rf 
 .c.o:
 	@gcc ${FLAGS}  -c $< -o ${<:.c=.o}
@@ -12,14 +12,14 @@ CC = gcc
 all: ${NAME}
 ${NAME}:${OBJS} 
 		@$(MAKE) -C libft
-		@${CC} ${OBJS} ${FLAGS} -L./libft -lft  -o ${NAME}
+		@${CC} ${OBJS} ${FLAGS}   -o ${NAME}
 	
 
 run: all
-	./philo 4 410 200 200 
+	./philo 1  200 200 200 
 
 val: all
-	 valgrind ./philo 4 310 200 100 2 40
+	valgrind   --leak-check=full --track-origins=yes -s --trace-children=yes  ./philo 1 310 200 100 2 40
 
 test: all
 	 @echo "error asserting"

@@ -6,7 +6,7 @@
 /*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 20:24:15 by jemartel          #+#    #+#             */
-/*   Updated: 2022/02/15 20:29:04 by jemartel         ###   ########.fr       */
+/*   Updated: 2022/02/16 15:40:51 by jemartel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ t_philo	**philo_init(t_state *state, char *argv[], int argc, int inc)
 
 int	print_protected(t_state *state, char *something, int nbr, int when)
 {
+	(void)when;
 	pthread_mutex_lock(&state->print);
-	printf("%d : %s : %d : %d\n", nbr + 1, something, when,
-		state->philo[nbr]->ate);
+	printf("%d %d %s\n", when, nbr + 1, something);
 	pthread_mutex_unlock(&state->print);
 	return (0);
 }
@@ -57,6 +57,7 @@ t_state	*state_init(char *argv[], int argc)
 
 	inc = 0;
 	state = ft_calloc(sizeof(t_state), 1);
+	state->is_alive = 1;
 	state->forks = ft_calloc(sizeof(pthread_mutex_t), nbr_philo);
 	state->philo_count = nbr_philo;
 	pthread_mutex_init(&state->print, NULL);
