@@ -11,12 +11,11 @@ CC = gcc
 
 all: ${NAME}
 ${NAME}:${OBJS} 
-		@$(MAKE) -C libft
 		@${CC} ${OBJS} ${FLAGS}   -o ${NAME}
 	
 
 run: all
-	./philo 1  200 200 200 
+	./philo 2 60 60 60  
 
 val: all
 	valgrind   --leak-check=full --track-origins=yes -s --trace-children=yes  ./philo 1 310 200 100 2 40

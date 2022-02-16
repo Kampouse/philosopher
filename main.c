@@ -6,7 +6,7 @@
 /*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 18:58:24 by jemartel          #+#    #+#             */
-/*   Updated: 2022/02/16 15:43:47 by jemartel         ###   ########.fr       */
+/*   Updated: 2022/02/16 17:49:46 by jemartel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	state_delete(t_state *state)
 	while (inc < state->philo_count)
 	{
 		pthread_mutex_destroy(&state->forks[inc]);
+		pthread_detach(state->thread[inc]);
 		inc++;
 	}
 	pthread_mutex_destroy(&state->print);

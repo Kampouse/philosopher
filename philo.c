@@ -6,24 +6,32 @@
 /*   By: jemartel <jemartel@student.42quebec>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 20:29:22 by jemartel          #+#    #+#             */
-/*   Updated: 2022/02/16 15:44:23 by jemartel         ###   ########.fr       */
+/*   Updated: 2022/02/16 18:02:17 by jemartel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
 
+int	phil_eating(t_philo *phil, t_state *state, int start)
+{
+	pthread_mutex_lock(&state->forks[phil->lfork]);
+	print_protected(state,
+		"has taken a fork", phil->nbr, current_time() - start);
+	pthread_mutex_lock(&state->forks[phil->rfork]);
+	print_protected(state,
+		"has taken a fork", phil->nbr, current_time() - start);
+	print_protected(state,
+		"is eating", phil->nbr, current_time() - start);
+	sleep_time(phil->time_to_eat);
+	return (0);
+}
+
 int	phil_looping(t_philo *phil, t_state *state, int start)
 {
-	while (state->is_alive)
+	while (state->is_alive == 1)
 	{
 		print_protected(state,
 			"is thinking", phil->nbr, current_time() - start);
-		pthread_mutex_lock(&state->forks[phil->lfork]);
-		print_protected(state,
-			"has taken a fork", phil->nbr, current_time() - start);
-		pthread_mutex_lock(&state->forks[phil->rfork]);
-		print_protected(state,
-			"has  taken a fork", phil->nbr, current_time() - start);
-		sleep_time(phil->time_to_eat);
+		phil_eating(phil, state, start);
 		pthread_mutex_unlock(&state->forks[phil->lfork]);
 		print_protected(state,
 			"drop a fork", phil->nbr, current_time() - start);
@@ -33,9 +41,9 @@ int	phil_looping(t_philo *phil, t_state *state, int start)
 		state->philo[phil->nbr
 		]->time_to_take_eat = current_time() + phil->death_time;
 		state->philo[phil->nbr]->ate++;
-		sleep_time(phil->time_to_sleep);
 		print_protected(state,
 			"is sleeping", phil->nbr, current_time() - start);
+		sleep_time(phil->time_to_sleep);
 	}
 	return (0);
 }
@@ -56,6 +64,5 @@ void	*philo_loop(void *philo)
 		usleep(16000);
 	}
 	phil_looping(phil, state, start);
-	pthread_detach(state->thread[phil->nbr]);
 	return (0);
 }
