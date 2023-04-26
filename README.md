@@ -11,4 +11,17 @@ There are various solutions to this problem, including a naive solution that lea
 
 The Dining Philosophers Problem is used to illustrate the challenges of achieving mutual exclusion and deadlock avoidance in a multi-process environment. It has practical applications in distributed systems, operating systems, and database management systems.
 # how to execute it? 
-  make run
+    make run
+
+
+### i want to  excute it with my own paramter 
+    ./philosopher [nbr-philo] [time-to-die] [time-to-eat] [time-to-think]
+
+
+
+### i am not on unix system how to run this
+https://replit.com/@jpmartel98/philosopher
+
+
+
+
