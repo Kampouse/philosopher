@@ -20,7 +20,7 @@ The Dining Philosophers Problem is used to illustrate the challenges of achievin
 
 
 ### i am not on unix system how to run this
-https://replit.com/@jpmartel98/philosopher
+https://replit.com/@jpmartel98/philosopher?v=1
 
 
 
